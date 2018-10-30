@@ -47452,6 +47452,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47476,13 +47495,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         fetchArticles: function fetchArticles(page_url) {
             var _this = this;
 
-            var vm = this;
+            //if page_url is not empty get the page_url
             page_url = page_url || 'api/articles';
             fetch(page_url).then(function (response) {
                 return response.json();
             }).then(function (response) {
                 _this.articles = response.data;
-                vm.makePagination(response.meta, response.links);
+                _this.makePagination(response.meta, response.links);
             }).catch(function (error) {
                 return console.log(error);
             });
@@ -47496,6 +47515,64 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             };
 
             this.pagination = pagination;
+        },
+        deleteArticle: function deleteArticle(id) {
+            var _this2 = this;
+
+            if (confirm('Are you sure?')) {
+                fetch('api/article/' + id, {
+                    method: 'delete'
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    alert('Article removed');
+                    _this2.fetchArticles();
+                }).catch(function (error) {
+                    return console.log(error);
+                });
+            }
+        },
+        addArticle: function addArticle() {
+            var _this3 = this;
+
+            if (this.edit === false) {
+                fetch('api/article', {
+                    method: 'post',
+                    body: JSON.stringify(this.article),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    _this3.article.title = '';
+                    _this3.article.body = '';
+                    alert('Article Updated');
+                    _this3.fetchArticles();
+                });
+            } else {
+                fetch('api/article', {
+                    method: 'put',
+                    body: JSON.stringify(this.article),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    _this3.article.title = '';
+                    _this3.article.body = '';
+                    alert('Article Added');
+                    _this3.fetchArticles();
+                });
+            }
+        },
+        editArticle: function editArticle(article) {
+            this.edit = true;
+            this.article.id = article.id;
+            this.article.article_id = article.id;
+            this.article.title = article.title;
+            this.article.body = article.body;
         }
     }
 });
@@ -47512,6 +47589,75 @@ var render = function() {
     "div",
     [
       _c("h2", { staticClass: "mt-3" }, [_vm._v("Articles")]),
+      _vm._v(" "),
+      _c("form", { attrs: { action: "" } }, [
+        _c("div", { staticClass: "form-group" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.article.title,
+                expression: "article.title"
+              }
+            ],
+            staticClass: "form-control",
+            attrs: { type: "text", placeholder: "Title" },
+            domProps: { value: _vm.article.title },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.article, "title", $event.target.value)
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "form",
+        {
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              _vm.addArticle()
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.article.body,
+                  expression: "article.body"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { placeholder: "Body" },
+              domProps: { value: _vm.article.body },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.article, "body", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("button", { staticClass: "btn btn-primary btn-block" }, [
+            _vm._v("Add")
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c("br"),
       _vm._v(" "),
       _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
         _c("ul", { staticClass: "pagination" }, [
@@ -47579,7 +47725,35 @@ var render = function() {
           [
             _c("h3", [_vm._v(_vm._s(article.title))]),
             _vm._v(" "),
-            _c("p", [_vm._v(_vm._s(article.body))])
+            _c("p", [_vm._v(_vm._s(article.body))]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-warning mb-2",
+                on: {
+                  click: function($event) {
+                    _vm.editArticle(article)
+                  }
+                }
+              },
+              [_vm._v("Edit")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                on: {
+                  click: function($event) {
+                    _vm.deleteArticle(article.id)
+                  }
+                }
+              },
+              [_vm._v("Delete")]
+            )
           ]
         )
       })
