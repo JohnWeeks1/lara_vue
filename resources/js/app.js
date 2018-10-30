@@ -16,6 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('navbar-component', require('./components/NavbarComponent.vue'));
+Vue.component('articles-component', require('./components/ArticlesComponent.vue'));
 
 const app = new Vue({
     el: '#app'

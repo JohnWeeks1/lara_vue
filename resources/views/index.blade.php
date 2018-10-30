@@ -17,7 +17,7 @@
         <div id="app">
             <navbar-component></navbar-component>
             <div class="container">
-
+                <articles-component></articles-component>
             </div>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
